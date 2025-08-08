@@ -86,6 +86,25 @@ http.createServer(async (req, res) => {
                 writeFile(200, 'application/json', JSON.stringify(users), res)
             })
         }
+    } else if (req.url.match(/\/api\/users\/(\d+)/) && req.method === "PUT") {
+        let id = req.url.split('/').at(-1)
+        let users = JSON.parse(await readFile('db', 'users.json'))
+        let person = users.find(user => user.id == id)
+        let personIndex = users.indexOf(person)
+
+        if (!person) {
+            const errorPage = await readFile('pages', 'errors.html')
+            writeFile(404, 'text/html', errorPage, res)
+        } else {
+            req.on('data', async (chunk) => {
+                let body = JSON.parse(chunk.toString())
+                body.id = users[personIndex].id
+                users[personIndex] = body
+                await fs.unlink(path.join(__dirname, 'db', 'users.json'))
+                await fs.appendFile(path.join(__dirname, 'db', 'users.json'), JSON.stringify(users))
+                writeFile(200, 'application/json', JSON.stringify(users), res)
+            })
+        }
     } else {
         const errorPage = await readFile('pages', 'errors.html')
         writeFile(404, 'text/html', errorPage, res)

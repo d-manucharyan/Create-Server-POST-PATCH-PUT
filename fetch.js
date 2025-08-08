@@ -25,12 +25,21 @@ fetch('http://localhost:3000/api/users/5', {
 
 //! PATCH
 
-fetch('http://localhost:3000/api/users/2', {
+fetch('http://localhost:3000/api/users/10', {
     method: 'PATCH',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ age: 105 })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ age: 45 })
 })
     .then(res => res.json())
     .then(data => console.log(data))
+
+//! PUT
+
+fetch('http://localhost:3000/api/users/10', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        name: 'David',
+        email: 'manuch@gmail.com'
+    })
+})
