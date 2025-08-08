@@ -24,8 +24,21 @@ http.createServer(async (req, res) => {
     } else if (req.url.includes('?') && req.method === 'GET') {
         let users = JSON.parse(await readFile('db', 'users.json'))
         let val = req.url.slice(req.url.indexOf('?') + 1).split('=').at(-1)
-        const limitedUsers = users.filter(user => user.name.toLowerCase().indexOf(val.toLowerCase()) > -1)
-        writeFile(200, 'application/json', JSON.stringify(limitedUsers), res)
+        let key = req.url.slice(req.url.indexOf('?') + 1).split('=')[0]
+        if (key === 'name') {
+            const limitedUsers = users.filter(user => user.name.toLowerCase().indexOf(val.toLowerCase()) > -1)
+            writeFile(200, 'application/json', JSON.stringify(limitedUsers), res)
+        } else if (key === 'sort' && val === 'minage') {
+            const sortedUsers = users.toSorted((a, b) => a.age - b.age)
+            writeFile(200, 'application/json', JSON.stringify(sortedUsers), res)
+        } else if (key === 'sort' && val === 'maxage') {
+            const sortedUsers = users.toSorted((a, b) => b.age - a.age)
+            writeFile(200, 'application/json', JSON.stringify(sortedUsers), res)
+        } else {
+            const errorPage = await readFile('pages', 'errors.html')
+            writeFile(404, 'text/html', errorPage, res)
+        }
+
     } else if (req.url === '/api/users' && req.method === 'POST') {
         req.on('data', async (chunk) => {
             let body = JSON.parse(chunk.toString())
