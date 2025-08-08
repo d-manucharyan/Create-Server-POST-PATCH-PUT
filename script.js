@@ -30,10 +30,17 @@ http.createServer(async (req, res) => {
         req.on('data', async (chunk) => {
             let body = JSON.parse(chunk.toString())
             const users = JSON.parse(await readFile('db', 'users.json'))
-            users.push(body)
-            await fs.unlink(path.join(__dirname, 'db', 'users.json'))
-            await fs.appendFile(path.join(__dirname, 'db', 'users.json'), JSON.stringify(users.sort((a, b) => a.id - b.id)))
-            writeFile(200, 'application/json', JSON.stringify(users), res)
+            const repeatingEmailPerson = users.find(user => user.email.toLowerCase() === body.email.toLowerCase())
+
+            if (repeatingEmailPerson) {
+                const emailERrorPage = await readFile('pages', 'emailError.html')
+                writeFile(404, 'text/html', emailERrorPage, res)
+            } else {
+                users.push(body)
+                await fs.unlink(path.join(__dirname, 'db', 'users.json'))
+                await fs.appendFile(path.join(__dirname, 'db', 'users.json'), JSON.stringify(users.sort((a, b) => a.id - b.id)))
+                writeFile(200, 'application/json', JSON.stringify(users), res)
+            }
         })
     } else if (req.url.match(/\/api\/users\/(\d+)/) && req.method === "DELETE") {
         let id = req.url.split('/').at(-1)
@@ -63,9 +70,12 @@ http.createServer(async (req, res) => {
                 Object.assign(person, body)
                 await fs.unlink(path.join(__dirname, 'db', 'users.json'))
                 await fs.appendFile(path.join(__dirname, 'db', 'users.json'), JSON.stringify(users))
-                writeFile(200, 'application/json', JSON.stringify({ person }), res)
+                writeFile(200, 'application/json', JSON.stringify(users), res)
             })
         }
+    } else {
+        const errorPage = await readFile('pages', 'errors.html')
+        writeFile(404, 'text/html', errorPage, res)
     }
 }).listen(3000, () => console.log('server is running'))
 
