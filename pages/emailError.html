@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Email Already Registered</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: #f57c00;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        a:hover {
+            background: #e65100;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>THIS EMAIL HAS ALREADY REGISTERED</h1>
+    <div class="container">
+        <h1>Email Already Registered</h1>
+        <p>The email address you entered is already in use. Please try again with a different email.</p>
+        <a href="/">Go Home</a>
+    </div>
 </body>
+
 </html>
